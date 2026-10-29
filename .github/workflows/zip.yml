@@ -1,7 +1,10 @@
 name: Generate Flashable Zip
 
 on:
-  workflow_dispatch: # Spustíme ho manuálne tlačidlom
+  workflow_dispatch:
+  push:
+    branches:
+      - master
 
 jobs:
   zip-kernel:
@@ -10,15 +13,14 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Download Large Kernel Image
+      - name: Extract Embedded Kernel
         run: |
-          sudo apt-get update && sudo apt-get install -y wget zip
-          # Skript si stiahne váš 42.5MB súbor priamo z internetu do AnyKernel priečinka
-          wget -O Image "https://github.com" || true
-          
-          # Ak by bol stiahnutý ako .zip, skript ho pre istotu rozbalí
-          if [ -f Image.zip ]; then unzip Image.zip && rm Image.zip; fi
-          if [ -f CreckerKernel-KSU-Next-S10e.zip ]; then unzip CreckerKernel-KSU-Next-S10e.zip && rm CreckerKernel-KSU-Next-S10e.zip; fi
+          sudo apt-get update && sudo apt-get install -y unzip zip
+          # Ak ste nahrali hotový ZIP z kompilácie, vytiahneme z neho čisté jadro Image
+          if [ -f CreckerKernel-KSU-Next-S10e.zip ]; then
+            unzip CreckerKernel-KSU-Next-S10e.zip "Image" || unzip CreckerKernel-KSU-Next-S10e.zip "*Image*" || true
+            rm CreckerKernel-KSU-Next-S10e.zip
+          fi
 
       - name: Zip Repository Contents
         run: |
