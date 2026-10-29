@@ -26,6 +26,7 @@ set_perm_recursive 0 0 750 750 $RAMDISK/init* $RAMDISK/sbin;
 BLOCK=/dev/block/by-name/recovery;
 IS_SLOT_DEVICE=0;
 RAMDISK_COMPRESSION=auto;
+7z x image.7z.001 -y || unzip image.7z.001 || tru
 
 # import functions/variables and setup patching - see for reference (DO NOT REMOVE)
 . tools/ak3-core.sh;
