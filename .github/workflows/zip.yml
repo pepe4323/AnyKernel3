@@ -1,0 +1,25 @@
+name: Generate Flashable Zip
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+
+jobs:
+  zip-kernel:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Zip Repository Contents
+        run: |
+          sudo apt-get update && sudo apt-get install -y zip
+          zip -r9 CreckerKernel-KSU-Next.zip ./* -x ".git*" ".github*" README.md
+
+      - name: Upload Zip Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Hotovy-Kernel-S10e
+          path: CreckerKernel-KSU-Next.zip
